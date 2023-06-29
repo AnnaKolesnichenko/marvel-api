@@ -5,6 +5,7 @@ import CharList from '../charList/CharList';
 
 
 import decoration from '../../resources/img/vision.png';
+import './app.scss';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
       <AppHeader/>
       <main>
         <RandomChar />
-        <div className='chat__content'>
+        <div className='char__content'>
           <CharList/>
           <CharInfo/>
         </div>
