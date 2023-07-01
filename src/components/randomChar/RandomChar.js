@@ -1,5 +1,7 @@
 import { Component } from 'react';
 import Spinner from '../spinner/Spinner';
+import View from '../singleView/View';
+import ErrorMessage from '../error/Error';
 import MarvelService from '../../services/MarvelService';
 
 import './randomChar.scss';
@@ -12,11 +14,13 @@ class RandomChar extends Component {
     }
 
     state = {
-        name: null,
-        description: null,
-        thumbnail: null,
-        homepage: null,
-        wiki: null,
+        data: {
+            name: null,
+            description: null,
+            thumbnail: null,
+            homepage: null,
+            wiki: null,
+        },
         loading: true, 
         error: false 
     }
@@ -51,29 +55,16 @@ class RandomChar extends Component {
 
 
     render() {
-        const {name, description, thumbnail, homepage, wiki, loading} = this.state;
-
+        const { loading, error} = this.state;
+        const spinner = loading ? <Spinner/> : null;
+        const errorM = error ? <ErrorMessage/> : null;
+        const contents = !(loading || error) ? <View data={this.state}/> : null;
          
         return (
             <div className="randomchar">
-                {loading ? <Spinner/> : 
-                <div className="randomchar__block">
-                    <img src={thumbnail} alt="Random character" className="randomchar__img"/>
-                    <div className="randomchar__info">
-                        <p className="randomchar__name">{name}</p>
-                        <p className="randomchar__descr">
-                            {description ? description.slice(0, 150) + '...' : "Under construction..."}
-                        </p>
-                        <div className="randomchar__btns">
-                            <a href={homepage} className="button button__main">
-                                <div className="inner">homepage</div>
-                            </a>
-                            <a href={wiki} className="button button__secondary">
-                                <div className="inner">wiki</div>
-                            </a>
-                        </div>
-                    </div>
-                </div>}
+                {spinner}
+                {errorM}
+                {contents}
                 
                 <div className="randomchar__static">
                     <p className="randomchar__title">
@@ -93,28 +84,5 @@ class RandomChar extends Component {
     }
 }
 
-// const View = ({data}) => {
-//     const {name, description, thumbnail, homepage, wiki} = data;
-//     return (
-//         <div className="randomchar__block">
-//             <img src={thumbnail} alt="Random character" className="randomchar__img"/>
-//             <div className="randomchar__info">
-//                 <p className="randomchar__name">{name}</p>
-//                 <p className="randomchar__descr">
-//                     {description ? description.slice(0, 150) + '...' : "Under construction..."}
-//                 </p>
-//                 <div className="randomchar__btns">
-//                     <a href={homepage} className="button button__main">
-//                         <div className="inner">homepage</div>
-//                     </a>
-//                     <a href={wiki} className="button button__secondary">
-//                         <div className="inner">wiki</div>
-//                     </a>
-//                 </div>
-//             </div>
-//         </div>
-//     )
-
-// }
 
 export default RandomChar;
