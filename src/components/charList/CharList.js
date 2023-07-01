@@ -1,34 +1,31 @@
 import { Component } from 'react';
+import MarvelService from '../../services/MarvelService';
 
 import './charList.scss';
-import MarvelService from '../../services/MarvelService';
 import abyss from '../../resources/img/abyss.jpg';
-
 
 class CharList extends Component {
 
-    state = {
-        data: {
-            name: null,
-            description: null,
-            thumbnail: null,
-            homepage: null,
-            wiki: null,
-        },
-        loading: true, 
-        error: false 
-    }
-
     marvelService = new MarvelService();
 
-    onSingleCharacterLoaded = (state) => {
+    state = {
+        name: null,
+        thumbnail: null,
+        loading: true,
+        error: false
+    }
+
+    onCharactersUpload = () => {
+        this.marvelService.getAllCharacters()
+                .then(res => console.log(res))
+                .then(this.onCaracterLoaded)
+                .catch(this.onError)
+    }
+
+    onCaracterLoaded = (state) => {
         this.setState({
             name: state.name,
-            description: state.description,
             thumbnail: state.thumbnail,
-            homepage: state.homepage,
-            wiki: state.wiki,
-            loading: false
         })
     }
 
@@ -39,32 +36,48 @@ class CharList extends Component {
         })
     }
 
-    onCharactersLoaded = () => {
-        const all = this.marvelService
-            .getAllCharacters()
-            .then(res => res.map(item => {
-
-            }))
-            return all;
-            
-    }
-
-    
-
-      
 
     render() {
-        const {data, loading, error} = this.state;
-
-        const charElements = this.renderAllItems(data);
-
-        // const spinner = loading ? <Spinner/> : null;
-        // const errorM = error ? <ErrorMessage/> : null;
-        // const contents = !(loading || error) ? charElements : null;
-        
         return (
             <div className="char__list">
-                {charElements}
+                <ul className="char__grid">
+                    <li className="char__item">
+                        <img src={abyss} alt="abyss"/>
+                        <div className="char__name">Abyss</div>
+                    </li>
+                    <li className="char__item char__item_selected">
+                        <img src={abyss} alt="abyss"/>
+                        <div className="char__name">Abyss</div>
+                    </li>
+                    <li className="char__item">
+                        <img src={abyss} alt="abyss"/>
+                        <div className="char__name">Abyss</div>
+                    </li>
+                    <li className="char__item">
+                        <img src={abyss} alt="abyss"/>
+                        <div className="char__name">Abyss</div>
+                    </li>
+                    <li className="char__item">
+                        <img src={abyss} alt="abyss"/>
+                        <div className="char__name">Abyss</div>
+                    </li>
+                    <li className="char__item">
+                        <img src={abyss} alt="abyss"/>
+                        <div className="char__name">Abyss</div>
+                    </li>
+                    <li className="char__item">
+                        <img src={abyss} alt="abyss"/>
+                        <div className="char__name">Abyss</div>
+                    </li>
+                    <li className="char__item">
+                        <img src={abyss} alt="abyss"/>
+                        <div className="char__name">Abyss</div>
+                    </li>
+                    <li className="char__item">
+                        <img src={abyss} alt="abyss"/>
+                        <div className="char__name">Abyss</div>
+                    </li>
+                </ul>
                 <button className="button button__main button__long">
                     <div className="inner">load more</div>
                 </button>
