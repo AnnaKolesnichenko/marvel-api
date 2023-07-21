@@ -1,88 +1,116 @@
-import { Component } from 'react';
-import MarvelService from '../../services/MarvelService';
+import { getAllCharacters } from '../../services/MarvelService';
+import { useState, useEffect } from 'react';
 import Error from '../error/Error';
 import Spinner from '../spinner/Spinner';
 
 import './charList.scss';
 
 
-class CharList extends Component {
-    state = {
-        itemList: [],
-        loading: true,
-        error: false
+const CharList = () => {
+    const [itemList, setItemList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+
+    const onLoading = () => {
+        setLoading(true)
     }
+
+    const onError = () => {
+        setError(true);
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        onLoading();
+        getAllCharacters()
+        .then(res => {
+            setItemList(res.results);
+            setLoading(false); 
+        })
+        .catch(onError())
+    }, [])
+
+    // const renderItems = (arr) => {
+    //     const items =  arr.map((item) => {
+    //         let imgObjectFit = 'cover';
+    //         if (item.thumbnail === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg") {
+    //             imgObjectFit = 'contain';
+    //         }
+            
+    //         return (
+    //             <li 
+    //                 className="char__item"
+    //                 key={item.id}>
+    //                     <img src={item.thumbnail} alt={item.name} style={{objectFit: imgObjectFit}}/>
+    //                     <div className="char__name">{item.name}</div>
+    //             </li>
+    //         )
+    //     });
+    //     // А эта конструкция вынесена для центровки спиннера/ошибки
+    //     return (
+    //         <ul className="char__grid">
+    //             {items}
+    //         </ul>
+    //     )
+    // }
+
+
     
-    marvelService = new MarvelService();
+    // const items = renderItems(itemList);
 
-    componentDidMount() {
-        this.marvelService.getAllCharacters()
-            .then(this.onCharListLoaded)
-            .catch(this.onError)
-    }
 
-    onCharListLoaded = (itemList) => {
-        this.setState({
-            itemList,
-            loading: false
-        })
-    }
+    return (
+        <div className="char__list">
+            {error && <Error/>}
+            {loading && <Spinner/>}
+            {itemList.map(item => {
+                let imgObjectFit = 'cover';
+                if (item.thumbnail === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg") {
+                    imgObjectFit = 'contain';
+                }
 
-    onError = () => {
-        this.setState({
-            error: true,
-            loading: false
-        })
-    }
+                return (
+                    <li 
+                    className="char__item"
+                    key={item.id}>
+                    <img src={item.thumbnail} alt={item.name} style={{objectFit: imgObjectFit}}/>
+                    <div className="char__name">{item.name}</div>
+                </li>
+                )
+        })}
+            <button className="button button__main button__long">
+                <div className="inner">load more</div>
+            </button>
+        </div>
+    )
+}
+
+    // state = {
+    //     itemList: [],
+    //     loading: true,
+    //     error: false
+    // }
+    
+
+
+    // componentDidMount() {
+    //     this.marvelService.getAllCharacters()
+    //         .then(this.onCharListLoaded)
+    //         .catch(this.onError)
+    // }
+
+    // onCharListLoaded = (itemList) => {
+    //     this.setState({
+    //         itemList,
+    //         loading: false
+    //     })
+    // }
+
 
     // Этот метод создан для оптимизации, 
     // чтобы не помещать такую конструкцию в метод render
-    renderItems(arr) {
-        const items =  arr.map((item) => {
-            let imgObjectFit = 'cover';
-            if (item.thumbnail === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg") {
-                imgObjectFit = 'contain';
-            }
-            
-            return (
-                <li 
-                    className="char__item"
-                    key={item.id}>
-                        <img src={item.thumbnail} alt={item.name} style={{objectFit: imgObjectFit}}/>
-                        <div className="char__name">{item.name}</div>
-                </li>
-            )
-        });
-        // А эта конструкция вынесена для центровки спиннера/ошибки
-        return (
-            <ul className="char__grid">
-                {items}
-            </ul>
-        )
-    }
+    
 
-    render() {
-
-        const {itemList, loading, error} = this.state;
-        
-        const items = this.renderItems(itemList);
-
-        const errorMessage = error ? <Error/> : null;
-        const spinner = loading ? <Spinner/> : null;
-        const content = !(loading || error) ? items : null;
-
-        return (
-            <div className="char__list">
-                {errorMessage}
-                {spinner}
-                {content}
-                <button className="button button__main button__long">
-                    <div className="inner">load more</div>
-                </button>
-            </div>
-        )
-    }
-}
     // marvelService = new MarvelService();
 
     // state = {
